@@ -1,0 +1,74 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/mcpb/main/schemas/mcpb-manifest-v0.3.schema.json",
+  "manifest_version": "0.3",
+  "name": "jetapi-mcp-server",
+  "display_name": "JetAPI",
+  "version": "1.0.1",
+  "description": "Send WhatsApp, Telegram, SMS and MAX messages, files and bulk mailings via JetAPI",
+  "long_description": "Official JetAPI extension. Lets Claude send text messages and files through WhatsApp, a personal Telegram account, Telegram bots, SMS, VK/OK and MAX — with channel cascades, scheduling and bulk mailings — check delivery status, look up phone numbers and manage webhooks. Requires a JetAPI token from https://jetapi.io.",
+  "author": {
+    "name": "JetAPI",
+    "email": "support@jetapi.io",
+    "url": "https://jetapi.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jetapi/jetapi-mcp-server"
+  },
+  "homepage": "https://jetapi.io",
+  "documentation": "https://github.com/jetapi/jetapi-mcp-server#readme",
+  "support": "https://github.com/jetapi/jetapi-mcp-server/issues",
+  "icon": "icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "JETAPI_TOKEN": "${user_config.jetapi_token}",
+        "JETAPI_BASE_URL": "${user_config.jetapi_base_url}"
+      }
+    }
+  },
+  "tools": [
+    { "name": "get_account", "description": "Full account info: balance, dispatch routing, sender names, subscription and messenger sessions" },
+    { "name": "get_balance", "description": "Balance, customer ID, dispatch routing channels and sender names" },
+    { "name": "get_utm_tags", "description": "List UTM tags used to track dispatches" },
+    { "name": "send_message", "description": "Send a text via WhatsApp, Telegram, Telegram Bot, SMS, VK/OK or MAX with cascade and scheduling" },
+    { "name": "send_bulk", "description": "Send the same message to many phone numbers at once" },
+    { "name": "get_delivery_status", "description": "Status and details of a delivery" },
+    { "name": "delete_delivery", "description": "Delete a delivered WhatsApp/Telegram message on all devices" },
+    { "name": "get_phone_info", "description": "Country, operator and normalized format of a phone number" },
+    { "name": "send_file", "description": "Send a document, image, audio or video file" },
+    { "name": "create_webhook", "description": "Subscribe a URL to incoming messages, statuses and login events" },
+    { "name": "get_webhook", "description": "Details of one webhook" },
+    { "name": "list_webhooks", "description": "All registered webhooks" },
+    { "name": "delete_webhook", "description": "Delete a webhook" },
+    { "name": "update_webhook", "description": "Change a webhook's URL or event types" }
+  ],
+  "keywords": ["whatsapp", "telegram", "sms", "messaging", "notifications", "jetapi"],
+  "license": "ISC",
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.17.0"
+    }
+  },
+  "user_config": {
+    "jetapi_token": {
+      "type": "string",
+      "title": "JetAPI token",
+      "description": "Bearer token from your JetAPI dashboard (https://jetapi.io)",
+      "sensitive": true,
+      "required": true
+    },
+    "jetapi_base_url": {
+      "type": "string",
+      "title": "API base URL",
+      "description": "Leave the default unless you use a white-label JetAPI installation",
+      "required": false,
+      "default": "https://api.jetapi.io"
+    }
+  }
+}

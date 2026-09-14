@@ -1,6 +1,11 @@
 # JetAPI MCP Server
 
-MCP server for [JetAPI](https://jetapi.io) — send WhatsApp, Telegram, SMS and MAX messages, files and bulk mailings from AI agents like Claude.
+[![npm](https://img.shields.io/npm/v/jetapi-mcp-server)](https://www.npmjs.com/package/jetapi-mcp-server)
+[![CI](https://github.com/jetapi/jetapi-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/jetapi/jetapi-mcp-server/actions/workflows/ci.yml)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.jetapi%2Fjetapi--mcp--server-0568FD)](https://registry.modelcontextprotocol.io)
+[![License: ISC](https://img.shields.io/badge/license-ISC-blue)](LICENSE)
+
+Official MCP server for [JetAPI](https://jetapi.io) — send WhatsApp, Telegram, SMS and MAX messages, files and bulk mailings from AI agents like Claude, Cursor and VS Code.
 
 ## Tools
 
@@ -14,7 +19,7 @@ MCP server for [JetAPI](https://jetapi.io) — send WhatsApp, Telegram, SMS and 
 | `get_delivery_status` | Status and details of a delivery, with the status explained in plain words |
 | `delete_delivery` | Delete a delivered WhatsApp/Telegram message on all recipient devices |
 | `get_phone_info` | Country, operator and normalized format of a phone number |
-| `send_file` | Send a document, image, audio, video or contact card from a local path, URL or base64 (up to 100 MB) |
+| `send_file` | Send a document, image, audio or video from a local path, URL or base64 (up to 100 MB) |
 | `create_webhook` | Subscribe a URL to events: incoming messages, WhatsApp statuses, login/logout |
 | `get_webhook` | Details of one webhook |
 | `list_webhooks` | All registered webhooks |
@@ -23,15 +28,19 @@ MCP server for [JetAPI](https://jetapi.io) — send WhatsApp, Telegram, SMS and 
 
 ## Get a token
 
-Sign up at **[jetapi.io](https://jetapi.io)** and copy the API token from the dashboard.
+Sign up at **[jetapi.io](https://jetapi.io)** and copy the API token from the dashboard. To send through WhatsApp or Telegram, connect the messenger in the dashboard first.
 
 ## Installation
 
-Requires Node.js 18.17 or newer.
+### Claude Desktop — one click
 
-### Claude Desktop
+1. Download `jetapi-mcp-server.mcpb` from the [latest release](https://github.com/jetapi/jetapi-mcp-server/releases/latest).
+2. Double-click it (or drag it into *Claude Desktop → Settings → Extensions*).
+3. Paste your JetAPI token when asked. It is stored securely by Claude Desktop.
 
-Open *Settings → Developer → Edit Config* (`claude_desktop_config.json`) and add:
+### Claude Desktop — config file
+
+Requires Node.js 18.17 or newer. Open *Settings → Developer → Edit Config* (`claude_desktop_config.json`) and add:
 
 ```json
 {
@@ -59,6 +68,46 @@ The server needs `JETAPI_TOKEN`, so pass it when adding:
 claude mcp add jetapi --env JETAPI_TOKEN=your_token_here -- npx -y jetapi-mcp-server
 ```
 
+### Cursor
+
+Add to `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project):
+
+```json
+{
+  "mcpServers": {
+    "jetapi": {
+      "command": "npx",
+      "args": ["-y", "jetapi-mcp-server"],
+      "env": { "JETAPI_TOKEN": "your_token_here" }
+    }
+  }
+}
+```
+
+### VS Code
+
+Add to `.vscode/mcp.json` — VS Code will prompt for the token and keep it out of the file:
+
+```json
+{
+  "inputs": [
+    { "type": "promptString", "id": "jetapi_token", "description": "JetAPI token", "password": true }
+  ],
+  "servers": {
+    "jetapi": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "jetapi-mcp-server"],
+      "env": { "JETAPI_TOKEN": "${input:jetapi_token}" }
+    }
+  }
+}
+```
+
+### MCP Registry
+
+The server is listed in the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.jetapi/jetapi-mcp-server`, so clients and catalogs that read the registry can install it directly.
+
 ### Other MCP clients
 
 Any client that supports stdio servers:
@@ -70,19 +119,6 @@ Any client that supports stdio servers:
   "env": { "JETAPI_TOKEN": "your_token_here" }
 }
 ```
-
-### From source
-
-```bash
-git clone https://github.com/jetapi/jetapi-mcp-server.git
-cd jetapi-mcp-server
-npm install
-cp .env.example .env   # put your token in .env
-npm run build
-npm start
-```
-
-`npm run dev` runs the TypeScript source directly; `npm run inspector` opens the MCP Inspector with all 14 tools.
 
 ## Configuration
 
@@ -139,6 +175,30 @@ Ask Claude in plain language:
 - Errors are returned as readable tool errors, e.g. `Invalid JetAPI token. Check your JETAPI_TOKEN.` or `Validation error: text: the text cannot be empty`.
 - All logs go to stderr; stdout is reserved for the MCP protocol.
 
+## Development
+
+```bash
+git clone https://github.com/jetapi/jetapi-mcp-server.git
+cd jetapi-mcp-server
+npm install
+cp .env.example .env   # put your token in .env
+npm run build
+npm start
+```
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Run the TypeScript source directly |
+| `npm run inspector` | Open the MCP Inspector with all tools |
+| `npm run check` | Verify versions in `package.json` / `server.json` / `manifest.json` and that the server exposes all 14 tools |
+| `npm run build:mcpb` | Build the Claude Desktop extension into `build/jetapi-mcp-server.mcpb` |
+
+### Releasing
+
+1. Bump the version in `package.json`, `server.json` (both `version` fields) and `manifest.json`, and add a `CHANGELOG.md` entry.
+2. Merge to `main`, then push a tag: `git tag v1.2.3 && git push origin v1.2.3`.
+3. The [Release workflow](.github/workflows/release.yml) publishes to npm (trusted publishing with provenance), creates a GitHub release with the `.mcpb` bundle and updates the MCP Registry.
+
 ## License
 
-ISC
+[ISC](LICENSE)
