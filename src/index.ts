@@ -1,145 +1,43 @@
-import "dotenv/config"
+#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
-import { z } from "zod"
-import { sendJetapiMessage } from "./jetapi.js"
+import { JetApiClient } from "./client.js"
+import { SERVER_NAME, SERVER_VERSION, loadConfig } from "./config.js"
+import { MISSING_TOKEN_MESSAGE } from "./errors.js"
+import { log } from "./logger.js"
+import { accountTools } from "./tools/account.js"
+import { bulkTools } from "./tools/bulk.js"
+import { deliveryTools } from "./tools/delivery.js"
+import { fileTools } from "./tools/file.js"
+import { phoneTools } from "./tools/phone.js"
+import { registerTools, type AnyToolDefinition } from "./tools/registry.js"
+import { webhookTools } from "./tools/webhooks.js"
 
-const jetapiToken = process.env.JETAPI_TOKEN
-const jetapiBaseUrl = process.env.JETAPI_BASE_URL || "https://api.jetapi.io"
+const INSTRUCTIONS = `JetAPI sends WhatsApp, Telegram (personal account or bot), SMS, VK/OK and MAX messages.
+Typical flow: get_account (is WhatsApp/Telegram authorized, is the subscription active) → send_message / send_file / send_bulk → get_delivery_status.
+Phone numbers use international format with the country code, e.g. 79991234567.`
 
-const server = new McpServer({
-  name: "jetapi-mcp",
-  version: "1.0.0"
+const tools: AnyToolDefinition[] = [
+  ...accountTools,
+  ...deliveryTools,
+  ...bulkTools,
+  ...phoneTools,
+  ...fileTools,
+  ...webhookTools,
+]
+
+async function main(): Promise<void> {
+  const config = loadConfig()
+  const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION }, { instructions: INSTRUCTIONS })
+  registerTools(server, tools, { config, client: new JetApiClient(config) })
+
+  await server.connect(new StdioServerTransport())
+
+  log.raw(`JetAPI MCP Server v${SERVER_VERSION} — ${tools.length} tools loaded`)
+  if (!config.token) log.warn(MISSING_TOKEN_MESSAGE)
+}
+
+main().catch((err: unknown) => {
+  log.error(`Failed to start: ${err instanceof Error ? err.message : String(err)}`)
+  process.exit(1)
 })
-
-server.tool(
-  "jetapi_send_message",
-  "Send a message via Jetapi. For WhatsApp use phone only. For Telegram use exactly one of: phone, username, or Telegram ID.",
-  {
-    dispatch_routing: z
-      .array(z.string())
-      .min(1)
-      .describe('Channel routing array. Example: ["whatsapp"] or ["tdlib"]'),
-
-    text: z
-      .string()
-      .min(1)
-      .describe("Message text"),
-
-    phone: z
-      .string()
-      .optional()
-      .describe("Recipient phone number. Required for WhatsApp. Can also be used for Telegram."),
-
-    username: z
-      .string()
-      .optional()
-      .describe("Telegram username only. Use without @ if possible."),
-
-    telegram_id: z
-      .string()
-      .optional()
-      .describe("Telegram ID")
-  },
-  async ({ dispatch_routing, text, phone, username, telegram_id }) => {
-    if (!jetapiToken) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "JETAPI_TOKEN is not set in .env"
-          }
-        ],
-        isError: true
-      }
-    }
-
-    const recipients = [phone, username, telegram_id].filter(
-      (value) => typeof value === "string" && value.trim() !== ""
-    )
-
-    if (recipients.length !== 1) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "You must provide exactly one recipient field: phone, username, or telegram_id."
-          }
-        ],
-        isError: true
-      }
-    }
-
-    const routing = dispatch_routing.map((item) => item.toLowerCase())
-    const isWhatsApp = routing.includes("whatsapp")
-    const isTelegram = routing.includes("tdlib") || routing.includes("telegram")
-
-    if (isWhatsApp && !phone) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "For WhatsApp, use phone only."
-          }
-        ],
-        isError: true
-      }
-    }
-
-    if (isWhatsApp && (username || telegram_id)) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "For WhatsApp, username and telegram_id must be empty. Use phone only."
-          }
-        ],
-        isError: true
-      }
-    }
-
-    if (isTelegram && !phone && !username && !telegram_id) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "For Telegram, provide exactly one of: phone, username, or telegram_id."
-          }
-        ],
-        isError: true
-      }
-    }
-
-    try {
-      const result = await sendJetapiMessage(jetapiBaseUrl, jetapiToken, {
-        dispatch_routing,
-        text,
-        phone,
-        username,
-        tdlib: telegram_id
-      })
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(result, null, 2)
-          }
-        ]
-      }
-    } catch (error) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: error instanceof Error ? error.message : "Unknown Jetapi error"
-          }
-        ],
-        isError: true
-      }
-    }
-  }
-)
-
-const transport = new StdioServerTransport()
-await server.connect(transport)
