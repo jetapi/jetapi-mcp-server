@@ -3,7 +3,7 @@
   "manifest_version": "0.3",
   "name": "jetapi-mcp-server",
   "display_name": "JetAPI",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Send WhatsApp, Telegram, SMS and MAX messages, files and bulk mailings via JetAPI",
   "long_description": "Official JetAPI extension. Lets Claude send text messages and files through WhatsApp, a personal Telegram account, Telegram bots, SMS, VK/OK and MAX — with channel cascades, scheduling and bulk mailings — check delivery status, look up phone numbers and manage webhooks. Requires a JetAPI token from https://jetapi.io.",
   "author": {
@@ -49,6 +49,10 @@
   ],
   "keywords": ["whatsapp", "telegram", "sms", "messaging", "notifications", "jetapi"],
   "license": "ISC",
+  "privacy_policies": [
+    "https://github.com/jetapi/jetapi-mcp-server/blob/main/PRIVACY.md",
+    "https://jetapi.io/jp/privacypolicy"
+  ],
   "compatibility": {
     "platforms": ["darwin", "win32", "linux"],
     "runtimes": {
