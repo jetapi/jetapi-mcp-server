@@ -1,6 +1,6 @@
 {
   "name": "jetapi-mcp-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for JetAPI — send WhatsApp and Telegram messages from AI agents",
   "type": "module",
   "bin": {
@@ -19,7 +19,9 @@
     "build": "tsc && chmod +x dist/index.js",
     "start": "node dist/index.js",
     "inspector": "npx @modelcontextprotocol/inspector tsx src/index.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "check": "node scripts/check.mjs",
+    "build:mcpb": "node scripts/build-mcpb.mjs"
   },
   "repository": {
     "type": "git",
@@ -34,7 +36,7 @@
     "ai",
     "claude"
   ],
-  "author": "",
+  "author": "JetAPI <support@jetapi.io> (https://jetapi.io)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jetapi/jetapi-mcp-server/issues"
@@ -46,8 +48,10 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@anthropic-ai/mcpb": "^2.1.2",
     "@types/node": "^25.4.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
-  }
+  },
+  "mcpName": "io.github.jetapi/jetapi-mcp-server"
 }

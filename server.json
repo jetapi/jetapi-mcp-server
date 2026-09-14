@@ -1,0 +1,37 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jetapi/jetapi-mcp-server",
+  "title": "JetAPI",
+  "description": "Send WhatsApp, Telegram, SMS and MAX messages, files and bulk mailings via JetAPI",
+  "websiteUrl": "https://jetapi.io",
+  "repository": {
+    "url": "https://github.com/jetapi/jetapi-mcp-server",
+    "source": "github"
+  },
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "jetapi-mcp-server",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "JETAPI_TOKEN",
+          "description": "Bearer token from the JetAPI dashboard (https://jetapi.io)",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "JETAPI_BASE_URL",
+          "description": "API host. Change only for a white-label JetAPI installation.",
+          "isRequired": false,
+          "default": "https://api.jetapi.io"
+        }
+      ]
+    }
+  ]
+}
