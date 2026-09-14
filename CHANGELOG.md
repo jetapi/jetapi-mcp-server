@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 — 2026-09-14
+
+- Added a privacy policy for the extension (`PRIVACY.md`), a "Privacy Policy" section in the README and `privacy_policies` in `manifest.json`, as required for the Claude Desktop extensions directory.
+
 ## 1.0.1 — 2026-09-14
 
 - Listed in the official MCP Registry as `io.github.jetapi/jetapi-mcp-server` (`mcpName` in `package.json`, `server.json`).

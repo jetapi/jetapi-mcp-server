@@ -199,6 +199,15 @@ npm start
 2. Merge to `main`, then push a tag: `git tag v1.2.3 && git push origin v1.2.3`.
 3. The [Release workflow](.github/workflows/release.yml) publishes to npm (trusted publishing with provenance), creates a GitHub release with the `.mcpb` bundle and updates the MCP Registry.
 
+## Privacy Policy
+
+The extension runs locally, collects no analytics or telemetry, and sends data only to the JetAPI API to perform the actions you request. Your API token is stored by your MCP client (Claude Desktop keeps it in secure storage).
+
+- [JetAPI MCP Server privacy policy](PRIVACY.md) — what the extension handles, stores and shares
+- [JETAPI LLC Privacy Policy](https://jetapi.io/jp/privacypolicy) — how the JetAPI service processes personal data
+
+Questions: [support@jetapi.io](mailto:support@jetapi.io)
+
 ## License
 
 [ISC](LICENSE)
