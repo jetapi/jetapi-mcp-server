@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3 — 2026-09-23
+
+- Relicensed from ISC to MIT.
+- `author.url` in `manifest.json` now points at the GitHub profile, as the Claude Desktop extensions directory expects.
+
 ## 1.0.2 — 2026-09-14
 
 - Added a privacy policy for the extension (`PRIVACY.md`), a "Privacy Policy" section in the README and `privacy_policies` in `manifest.json`, as required for the Claude Desktop extensions directory.

@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/jetapi-mcp-server)](https://www.npmjs.com/package/jetapi-mcp-server)
 [![CI](https://github.com/jetapi/jetapi-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/jetapi/jetapi-mcp-server/actions/workflows/ci.yml)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.jetapi%2Fjetapi--mcp--server-0568FD)](https://registry.modelcontextprotocol.io)
-[![License: ISC](https://img.shields.io/badge/license-ISC-blue)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 Official MCP server for [JetAPI](https://jetapi.io) — send WhatsApp, Telegram, SMS and MAX messages, files and bulk mailings from AI agents like Claude, Cursor and VS Code.
 
@@ -210,4 +210,4 @@ Questions: [support@jetapi.io](mailto:support@jetapi.io)
 
 ## License
 
-[ISC](LICENSE)
+[MIT](LICENSE)
