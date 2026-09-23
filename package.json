@@ -1,6 +1,6 @@
 {
   "name": "jetapi-mcp-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MCP server for JetAPI — send WhatsApp and Telegram messages from AI agents",
   "type": "module",
   "bin": {
@@ -37,7 +37,7 @@
     "claude"
   ],
   "author": "JetAPI <support@jetapi.io> (https://jetapi.io)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/jetapi/jetapi-mcp-server/issues"
   },
